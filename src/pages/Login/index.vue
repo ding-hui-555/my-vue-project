@@ -38,6 +38,20 @@
 </template>
 
 <script>
+
+
+//登入逻辑的实现
+/* 
+1 收集用户输入的用户名密码传递给后端
+2 登入通过之后，将后端返回的token存到本地
+3 每次请求的时候，携带token到请求头authorization
+4 展示token校验正确的数据
+5 校验不通过，跳转到登入页
+*/
+
+
+import {login} from "@/api"
+// import {mapMutations} from "vuex"
 export default {
   data() {
     /**
@@ -76,11 +90,46 @@ export default {
     };
   },
   methods: {
+    // ...mapMutations(["SET_USERINFO"]),
     submitForm(formName) {
-      console.log(this.$refs[formName]);
+      // console.log(this.$refs[formName]);
       this.$refs[formName].validate(valid => {
-        if (valid) {
-          alert("submit!");
+        if (valid) {  //代表本地校验通过
+        //打开登录加载动画
+        const loading=this.$loading({
+          lock: true,
+          text: '正在登入...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+          // console.log(this.loginForm.username);
+          // console.log(this.loginForm.password);
+          let {username,password} =this.loginForm
+          //发送登入请求
+          console.log(username,password);
+          // debugger;
+          login(username,password)
+          .then(res=>{
+            //服务器响应关闭loading动画
+            loading.close()
+            console.log(res);
+            if(res.data.state){
+              //用户名密码正确
+              this.$message.success("登入成功")
+              localStorage.setItem("qf-token",res.data.token)
+              localStorage.setItem("qf-userInfo",JSON.stringify(res.data.userInfo))
+              //更改vuex中state[userInfo]的值
+              // this.SET_USERINFO(res.data.userInfo)
+              // this.$router.push("/")
+            }else{
+              //用户名或者密码错误
+              console.log(1);
+              this.$message.error("用户名或者密码错误")
+            }
+          })
+          .catch(err=>{
+            console.log(err);
+          })
         } else {
           console.log("error submit!!");
           return false;
