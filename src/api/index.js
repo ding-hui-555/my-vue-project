@@ -12,4 +12,4 @@ export const login=(username,password)=>axios({
 
 //获取登入日志
 
-export const getLoginLog=()=>axios.get("/getLoginLog")
+export const getLoginLog=()=>axios.get("/getloginlog")

@@ -4,6 +4,7 @@ import Login from "../pages/Login";
 
 Vue.use(VueRouter);
 
+import allRoutes from "./allRoutes"
 const routes = [
   {
     path: "/login",
@@ -17,8 +18,10 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "home" */ "../pages/Home")
-  }
+      import(/* webpackChunkName: "home" */ "../pages/Home"),
+    children:[]
+  },
+  
 ];
 
 const router = new VueRouter({

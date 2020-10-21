@@ -15,6 +15,7 @@
           type="text"
           v-model="loginForm.username"
           autocomplete="off"
+          
         ></el-input>
       </el-form-item>
 
@@ -23,6 +24,7 @@
           type="password"
           v-model="loginForm.password"
           autocomplete="off"
+         @keydown.native.enter="submitForm('loginForm')"
         ></el-input>
       </el-form-item>
 
@@ -49,9 +51,10 @@
 5 校验不通过，跳转到登入页
 */
 
-
+import Vue from "vue"
 import {login} from "@/api"
-// import {mapMutations} from "vuex"
+import {mapMutations} from "vuex"
+// Vue.config.keyCodes.rng=13
 export default {
   data() {
     /**
@@ -90,9 +93,10 @@ export default {
     };
   },
   methods: {
-    // ...mapMutations(["SET_USERINFO"]),
+    ...mapMutations(["SET_USERINFO"]),
+
     submitForm(formName) {
-      // console.log(this.$refs[formName]);
+      console.log(this.$refs[formName]);
       this.$refs[formName].validate(valid => {
         if (valid) {  //代表本地校验通过
         //打开登录加载动画
@@ -106,24 +110,24 @@ export default {
           // console.log(this.loginForm.password);
           let {username,password} =this.loginForm
           //发送登入请求
-          console.log(username,password);
+          // console.log(username,password);
           // debugger;
           login(username,password)
           .then(res=>{
             //服务器响应关闭loading动画
             loading.close()
-            console.log(res);
+            // console.log(res);
             if(res.data.state){
               //用户名密码正确
               this.$message.success("登入成功")
               localStorage.setItem("qf-token",res.data.token)
               localStorage.setItem("qf-userInfo",JSON.stringify(res.data.userInfo))
               //更改vuex中state[userInfo]的值
-              // this.SET_USERINFO(res.data.userInfo)
-              // this.$router.push("/")
+              this.SET_USERINFO(res.data.userInfo)
+             this.$router.push("/")
             }else{
               //用户名或者密码错误
-              console.log(1);
+              // console.log(1);
               this.$message.error("用户名或者密码错误")
             }
           })

@@ -4,8 +4,9 @@ module.exports = {
     proxy:{
       "/api":{
         target:"http://www.chst.vip",
+        changeOrigin:true,
         pathRewrite:{
-          "^api":""
+          "^/api":""
         }
       }
     }

@@ -7,12 +7,12 @@
       <el-aside width="200px">
         <div class="logo">
           <img src="./../../assets/3.png" alt="">
-          <p>前端顶峰</p>
+          <p>千锋智慧</p>
         </div>
       <!-- 展开收起 -->
         <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
-          <!-- <el-radio-button :label="false">展开</el-radio-button>
-          <el-radio-button :label="true">收起</el-radio-button> -->
+          <el-radio-button :label="false">展开</el-radio-button>
+          <el-radio-button :label="true">收起</el-radio-button>
         </el-radio-group>
 
 
@@ -39,10 +39,23 @@
               <i class="te">学员管理</i>
               <!-- <span slot="title"></span> -->
             </template>
+
             <el-menu-item-group>
               <el-menu-item index="2-1">
                 <em class="iconfont icon-xin"></em>
-                <span>学员管理项目</span></el-menu-item>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;学员管理项目</span></el-menu-item>
+            </el-menu-item-group>
+
+            <el-menu-item-group>
+              <el-menu-item index="2-2">
+                <em class="iconfont icon-fangdajing"></em>
+                <span  style="margin:0px 15px 0px">学员资料</span></el-menu-item>
+            </el-menu-item-group>
+
+            <el-menu-item-group>
+              <el-menu-item index="2-3">
+                <em class="iconfont icon-gaojiaobei"></em>
+                <span style="margin:0px 15px 0px">学员宿舍</span></el-menu-item>
             </el-menu-item-group>
             
           </el-submenu>
@@ -50,6 +63,20 @@
           <!-- 我的中心 -->
           <el-menu-item index="3">
             <em class="iconfont icon-mine-gray"></em>
+            <i>考勤管理</i>
+            <!-- <span slot="title"></span> -->
+          </el-menu-item>
+
+           <!-- 我的中心 -->
+          <el-menu-item index="4">
+            <em class="iconfont icon-star_full"></em>
+            <i>数据统计</i>
+            <!-- <span slot="title"></span> -->
+          </el-menu-item>
+
+           <!-- 我的中心 -->
+          <el-menu-item index="5">
+            <em class="iconfont icon-tongzhi"></em>
             <i>我的中心</i>
             <!-- <span slot="title"></span> -->
           </el-menu-item>
@@ -74,13 +101,15 @@
                 <img src="./../../assets/2.jpg" alt="">
                 欢迎您：
                 <!-- {{userInfo.nickname}} -->
-                <b class="nickname">111</b>  
+                <b class="nickname">{{userInfo.nickname}} </b>  
                  <span class="quit" @click="quit">退出</span></div
             ></el-col>
           </el-row>
         </el-header>
         <!-- 右下主体区域 -->
-        <el-main>Main</el-main>
+        <el-main>
+         <router-view></router-view>
+        </el-main>
       </el-container>
 
 
@@ -90,6 +119,9 @@
 
 <style>
 /* 右上顶栏的布局 */
+.quit{
+  cursor: pointer;
+}
 .el-header>div,.el-header{
     height: 60px;
     background:linear-gradient(90deg,#4c63fc,#5443e8) !important;
@@ -216,6 +248,22 @@
 .el-aside>ul>li:nth-of-type(3)>em:hover{
    color:#e47833 !important;
 }
+.el-aside>ul>li:nth-of-type(4)>em{
+   font-size: 20px !important;
+   color:#4e5bf8 !important;
+   margin-right: 3px;
+}
+.el-aside>ul>li:nth-of-type(4)>em:hover{
+   color:#e47833 !important;
+}
+.el-aside>ul>li:nth-of-type(5)>em{
+   font-size: 20px !important;
+   color:#4e5bf8 !important;
+   margin-right: 3px;
+}
+.el-aside>ul>li:nth-of-type(5)>em:hover{
+   color:#e47833 !important;
+}
 
 .el-aside>ul>li>i{
   color: #4e5bf8;
@@ -311,7 +359,7 @@ body > .el-container {
 
 
 <script>
-// import {mapState} from "vuex"
+import {mapState} from "vuex"
 import {getLoginLog} from "@/api"
 export default {
   data() {
@@ -326,18 +374,18 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     },
-    // quit(){
-    //   //退出登录
-    //   //1 清除token和userInfo
-    //   //2 跳转到登录页
-    //   localStorage.removeItem("qf-token")
-    //   localStorage.removeItem("qf-userInfo")
-    //   this.$router.push("/login")
-    // }
+    quit(){
+      //退出登录
+      //1 清除token和userInfo
+      //2 跳转到登录页
+      localStorage.removeItem("qf-token")
+      localStorage.removeItem("qf-userInfo")
+      this.$router.push("/login")
+    }
   },
-  // computed: {
-  //   ...mapState(["userInfo"])
-  // },
+  computed: {
+    ...mapState(["userInfo"])
+  },
   mounted(){
     getLoginLog()
     .then(res=>{
