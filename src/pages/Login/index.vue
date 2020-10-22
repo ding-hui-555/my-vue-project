@@ -124,7 +124,7 @@ export default {
               localStorage.setItem("qf-userInfo",JSON.stringify(res.data.userInfo))
               //更改vuex中state[userInfo]的值
               this.SET_USERINFO(res.data.userInfo)
-             this.$router.push("/")
+             this.$router.push("/Welcome")
             }else{
               //用户名或者密码错误
               // console.log(1);
@@ -153,9 +153,10 @@ export default {
    }
 
     .login-page .bg{
+     border-radius: 5%;  
      width: 400px;
      height: 500px;
-     background-color: rgba(0,0,0,.3);
+     background-color: rgba(0,0,0,.2);
       position: absolute;
      top: 100px;
      right:200px;

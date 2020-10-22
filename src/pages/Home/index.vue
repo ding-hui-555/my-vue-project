@@ -3,93 +3,30 @@
     <el-container>
 
 
-      <!-- 左侧边栏 -->
-      <el-aside width="200px">
-        <div class="logo">
-          <img src="./../../assets/3.png" alt="">
-          <p>千锋智慧</p>
-        </div>
-      <!-- 展开收起 -->
-        <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
-          <el-radio-button :label="false">展开</el-radio-button>
-          <el-radio-button :label="true">收起</el-radio-button>
-        </el-radio-group>
-
-
-      <!-- 菜单 -->
-        <el-menu
-          default-active="1-4-1"
-          class="el-menu-vertical-demo"
-          @open="handleOpen"
-          @close="handleClose"
-          :collapse="isCollapse"
-        >
-          
-        <!-- 管理首页 -->
-          <el-menu-item index="1">
-            <em class="iconfont icon-cart"></em>
-            <i>管理首页</i>
-            <!-- <span slot="title"></span> -->
-          </el-menu-item>
-
-        <!-- 学员管理 -->
-          <el-submenu index="2">
-            <template slot="title">
-              <em class="iconfont icon-yemian-copy-copy-copy-copy"></em>
-              <i class="te">学员管理</i>
-              <!-- <span slot="title"></span> -->
-            </template>
-
-            <el-menu-item-group>
-              <el-menu-item index="2-1">
-                <em class="iconfont icon-xin"></em>
-                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;学员管理项目</span></el-menu-item>
-            </el-menu-item-group>
-
-            <el-menu-item-group>
-              <el-menu-item index="2-2">
-                <em class="iconfont icon-fangdajing"></em>
-                <span  style="margin:0px 15px 0px">学员资料</span></el-menu-item>
-            </el-menu-item-group>
-
-            <el-menu-item-group>
-              <el-menu-item index="2-3">
-                <em class="iconfont icon-gaojiaobei"></em>
-                <span style="margin:0px 15px 0px">学员宿舍</span></el-menu-item>
-            </el-menu-item-group>
-            
-          </el-submenu>
-
-          <!-- 我的中心 -->
-          <el-menu-item index="3">
-            <em class="iconfont icon-mine-gray"></em>
-            <i>考勤管理</i>
-            <!-- <span slot="title"></span> -->
-          </el-menu-item>
-
-           <!-- 我的中心 -->
-          <el-menu-item index="4">
-            <em class="iconfont icon-star_full"></em>
-            <i>数据统计</i>
-            <!-- <span slot="title"></span> -->
-          </el-menu-item>
-
-           <!-- 我的中心 -->
-          <el-menu-item index="5">
-            <em class="iconfont icon-tongzhi"></em>
-            <i>我的中心</i>
-            <!-- <span slot="title"></span> -->
-          </el-menu-item>
-
+       <!-- 侧边菜单栏 -->
+      <el-aside width="200">
+        <el-menu :default-active="$route.path"
+                 class="el-menu-vertical-demo"
+                 :router="true"
+                 :collapse="isCollapse">
+          <qf-sub-menu :sideMenu="menuList"></qf-sub-menu>
         </el-menu>
-        <div class="bot"></div>
+        <!-- <div class="te"></div> -->
       </el-aside>
+
+
 
       <!-- 右总体区域 -->
       <el-container>
         <!-- 右上顶部栏 -->
         <el-header>
           <el-row type="flex" class="row-bg" justify="space-between">
+
+            
+                <i class="iconfont icon-shouqi"
+                   @click="isCollapse=!isCollapse"></i>
+              
+
             <el-col :span="6"
               ><div class="grid-content bg-purple"></div
             ></el-col>
@@ -108,17 +45,44 @@
         </el-header>
         <!-- 右下主体区域 -->
         <el-main>
+          <el-breadcrumb separator-class="el-icon-arrow-right">
+         <el-breadcrumb-item :to="{ path: '/Welcome' }">首页</el-breadcrumb-item>
+         <el-breadcrumb-item :to="{path:crumb.path}" v-for="(crumb,index) in crumbs"  :key="index">
+           {{crumb.meta.name}}
+         </el-breadcrumb-item>
+       </el-breadcrumb>
          <router-view></router-view>
-        </el-main>
+        </el-main> 
       </el-container>
-
+  
 
     </el-container>
   </div>
 </template>
 
 <style>
+
+
+/* 左下蓝色的框 */
+/* .te{
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  background-color: #000;
+  min-width: 100px;
+  height: 100px;
+} */
+
+.icon-shouqi {
+    color: pink;
+    font-size:25px;
+    cursor: pointer;
+    margin-top: -7px;
+    margin-left: 10px;
+  }
+
 /* 右上顶栏的布局 */
+
 .quit{
   cursor: pointer;
 }
@@ -135,7 +99,7 @@
         background-color:transparent;
         color: #fff;
         line-height: 40px;
-        margin-left: -200px;
+        margin-left: -300px;
   }
   .el-header>div>div:nth-of-type(3)>div{
         background-color:transparent;
@@ -166,115 +130,9 @@
   line-height: 60px;
 }
 
-.el-aside {
-  background-color: #d3dce6;
-  color: #333;
-  text-align: center;
-  line-height: 200px;
-  width: 205px !important;
-  position: relative;
-  border-right: 1px solid green;
-  overflow-x: hidden;
-}
-.el-aside>ul{
-  width: 204px;
-  margin-top: -140px;
-  height: 562px !important;
-}
-.el-aside .logo{
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 204px;
-  height: 60px;
-  background-color: #543de4;
-}
-.el-aside .logo p{
-  position: absolute;
-  top: -100px;
-  left: 70px;
-  color: #fff;
-  font-size: 30px;
-  font-weight: 700;
-  font-family: SimSun;
-}
-.el-aside .logo img{
-  position: absolute;
-  width: 60px;
-  left: 0px;
-  top: 3px;
-}
-.el-aside .bot{
-  width: 204px;
-  height: 100px;
-  position: absolute;
-  bottom: 0px;
-  left: 0;
-  background-color:  #543de4;
-}
-/* .el-menu--vertical{
-    position: static !important;
-  } */
-  li.el-menu-item:nth-of-type(1):hover{
-    background-color: transparent !important;
-  }
-  
-.el-aside>ul>li:nth-of-type(2)>div>i{
-  color: #4e5bf8;
-  font-style: normal;
-}
-.el-aside>ul>li:nth-of-type(1)>em{
-   font-size: 20px !important;
-   color:#4e5bf8 !important;
-   margin-right: 3px;
-}
-.el-aside>ul>li:nth-of-type(1)>em:hover{
-   color:#e47833 !important;
-}
 
-.el-aside>ul>li>div>em{
-   font-size: 20px !important;
-   color:#4e5bf8 !important;
-   margin-right: 3px;
-}
-.el-aside>ul>li>div>em:hover{
-   color:#e47833 !important;
-}
-.el-aside>ul>li:nth-of-type(3)>em{
-   font-size: 20px !important;
-   color:#4e5bf8 !important;
-   margin-right: 3px;
-}
-.el-aside>ul>li:nth-of-type(3)>em:hover{
-   color:#e47833 !important;
-}
-.el-aside>ul>li:nth-of-type(4)>em{
-   font-size: 20px !important;
-   color:#4e5bf8 !important;
-   margin-right: 3px;
-}
-.el-aside>ul>li:nth-of-type(4)>em:hover{
-   color:#e47833 !important;
-}
-.el-aside>ul>li:nth-of-type(5)>em{
-   font-size: 20px !important;
-   color:#4e5bf8 !important;
-   margin-right: 3px;
-}
-.el-aside>ul>li:nth-of-type(5)>em:hover{
-   color:#e47833 !important;
-}
 
-.el-aside>ul>li>i{
-  color: #4e5bf8;
-  font-style: normal;
-}
-.el-aside>ul>li>i:hover{
-  color: #e47833;
-}
-.el-aside>ul>li>div>i.te:hover{
-  color: #e47833;
-}
+
 .el-main {
   background-color: #e9eef3;
   color: #333;
@@ -328,12 +186,11 @@ body > .el-container {
   padding: 10px 0;
   background-color: #f9fafc;
 }
-.el-menu-item-group{
+/* .el-menu-item-group{
   position: relative;
   margin: 0;
   padding: 0;
   height: 45px;
-   /* background-color:#4e5bf8; */
 }
 .el-menu-item-group em{
    font-size: 20px !important;
@@ -354,17 +211,16 @@ body > .el-container {
 }
 .el-menu-item-group span:hover{
    color: #e47833;
-}
+} */
 </style>
-
 
 <script>
 import {mapState} from "vuex"
-import {getLoginLog} from "@/api"
+// import {getLoginLog} from "@/api"
 export default {
   data() {
     return {
-      isCollapse: true
+      isCollapse: false
     };
   },
   methods: {
@@ -381,16 +237,19 @@ export default {
       localStorage.removeItem("qf-token")
       localStorage.removeItem("qf-userInfo")
       this.$router.push("/login")
+      //刷新页面
+      window.location.reload()
     }
   },
   computed: {
-    ...mapState(["userInfo"])
+    ...mapState(["userInfo","menuList","crumbs"])
   },
   mounted(){
-    getLoginLog()
-    .then(res=>{
-      console.log(res);
-    })
+    // getLoginLog()
+    // .then(res=>{
+    //   // console.log(res);
+    // })
+
   }
 };
 </script>
