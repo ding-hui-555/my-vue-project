@@ -51,3 +51,10 @@ html,body,#app,.home-page,.el-container{
 }
 
 
+/* 验证码 */
+.captcha {
+    width: 40% !important;
+    float: left !important;
+}
+
+

@@ -4,7 +4,6 @@
       <h1>千锋管理系统</h1>
       <el-form
       :model="loginForm"     
-      status-icon
       :rules="rules"
       ref="loginForm"
       label-width="100px"
@@ -15,7 +14,6 @@
           type="text"
           v-model="loginForm.username"
           autocomplete="off"
-          
         ></el-input>
       </el-form-item>
 
@@ -27,6 +25,19 @@
          @keydown.native.enter="submitForm('loginForm')"
         ></el-input>
       </el-form-item>
+
+      <el-form-item label="验证码" prop="captcha">
+        <el-input
+          class="captcha"
+          type="password"
+          v-model="loginForm.captcha"
+          autocomplete="off"
+         @keydown.native.enter="submitForm('loginForm')"
+        ></el-input>
+
+        <span class="captcha-svg" v-html="captchaSvg" @click="refreshCaptcha">12333</span>
+      </el-form-item>
+
 
       <el-form-item>
         <el-button type="success" @click="submitForm('loginForm')">提交</el-button>
@@ -52,7 +63,7 @@
 */
 
 import Vue from "vue"
-import {login} from "@/api"
+import {login,getCaptcha,verifyCaptcha} from "@/api"
 import {mapMutations} from "vuex"
 // Vue.config.keyCodes.rng=13
 export default {
@@ -73,6 +84,7 @@ export default {
         callback()
       }
     };
+
     var validatePassword = (rule, value, callback) => {
       // var uPattern=/^[a-zA-Z0-9_-]{4,16}$/
       if(!value){
@@ -81,24 +93,59 @@ export default {
         callback()
       }
     };
+    //校验验证码
+    var validateCaptcha = (rule, value, callback) => {
+      if(value===""||value.length!==5){
+        callback(new Error("请输入验证码"))
+      }else{
+        callback()
+      }
+    };
+
     return {
+      captchaSvg:"",   //从服务器获取下来的验证码svg结构
       loginForm: {
         username: "",
-        password: ""
+        password: "",
+        captcha:""
       },
       rules: {
         username: [{ validator: validateUsername, trigger: "blur" }],
-        password: [{ validator: validatePassword, trigger: "blur" }]
+        password: [{ validator: validatePassword, trigger: "blur" }],
+        captcha: [{ validator: validateCaptcha, trigger: "blur" }]
       }
     };
   },
+  mounted () {
+    this.set_captcha()
+  },
   methods: {
+   //刷新验证码
+    refreshCaptcha(){
+       this.set_captcha()
+    },
+    //设置验证码
+    set_captcha(){
+      getCaptcha()
+      .then(res=>{
+        console.log(res);
+        this.captchaSvg=res.data.img
+      })
+    },
     ...mapMutations(["SET_USERINFO"]),
 
     submitForm(formName) {
       console.log(this.$refs[formName]);
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(async(valid) => {
         if (valid) {  //代表本地校验通过
+        //先验证验证码是否正确如果正确再发送登入请求
+        let verifyRes= await  verifyCaptcha(this.loginForm.captcha)
+        console.log(verifyRes);
+        if(!verifyRes.data.state){
+          //验证码不正确
+          this.$message.error("验证码输入不正确，请重新输入")
+           return
+        }
         //打开登录加载动画
         const loading=this.$loading({
           lock: true,
@@ -146,6 +193,14 @@ export default {
 
 
 <style scoped>
+   .captcha-svg{
+      background-color: #fff;
+      display: inline-block;
+      height: 44px;
+      width: 130px;
+      text-align: center;
+      cursor: pointer;
+   }
 
   .login-page{
      position: relative;
